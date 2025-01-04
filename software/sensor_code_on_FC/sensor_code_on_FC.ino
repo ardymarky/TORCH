@@ -54,7 +54,11 @@ void readWE_data() {
       }
     }
 
-    Serial.print("Wheel reading: "); Serial.println(wheel_reading.angle_uart);
+    unsigned long curMillis = millis();
+    // Serial.print("Wheel reading: "); 
+    Serial.print(wheel_reading.angle_uart);
+    Serial.print("\t");
+    Serial.println(curMillis);
 }
 
 
