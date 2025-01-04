@@ -11,13 +11,13 @@ if (DEFINED MCU)
   # Setting up the toolchain
   set(CMAKE_TOOLCHAIN_FILE "${mcu_support_SOURCE_DIR}/cmake/cortex.cmake")
   # Project information
-  project(TFMini  
+  project(ERCF  
     VERSION 1.0.2
-    DESCRIPTION "TFMini driver"
+    DESCRIPTION "ERCF driver"
     LANGUAGES CXX
   )
   # Grab the processor and set up definitions and compile options
-  include(${mcu_support_SOURCE_DIR}/cmake/config_mcu.cmake)
+  include(${mcu_support_SOURCE_DIR}/cmake/config_mcu.cmaFerke)
   configMcu(${MCU} ${mcu_support_SOURCE_DIR})
   # Fetch core
   FetchContent_Declare(
@@ -27,17 +27,17 @@ if (DEFINED MCU)
   )
   FetchContent_MakeAvailable(core)
   # Add the library target
-  add_library(tfmini
-    src/tfmini.cpp
-    src/tfmini.h
+  add_library(ercf
+    src/ercf.cpp
+    src/ercf.h
   )
   # Link libraries
-  target_link_libraries(tfmini
+  target_link_libraries(ercf
     PUBLIC
       core
   )
   # Setup include directories 
-  target_include_directories(tfmini PUBLIC 
+  target_include_directories(ercf PUBLIC 
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
     $<INSTALL_INTERFACE:include>
   )

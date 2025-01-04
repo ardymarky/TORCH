@@ -21,7 +21,7 @@
 * IN THE SOFTWARE.
 */
 
-#include "tfmini.h"  // NOLINT
+#include "ercf.h"  // NOLINT
 #if defined(ARDUINO)
 #include "Arduino.h"
 #else
@@ -30,7 +30,7 @@
 
 namespace bfs {
 
-bool TFMini::Begin() {
+bool ERCF::Begin() {
   bus_->end();
   bus_->begin(BAUD_);
   bus_->flush();
@@ -43,55 +43,44 @@ bool TFMini::Begin() {
   return false;
 }
 
-bool TFMini::Read(){
+bool ERCF::Read(){
     while (bus_->available()) {
         c_ = bus_->read();
         if (state_ == HEADER1_POS_) {
-        if (c_ == TFMini_HEADER1_) {
-            state_++;
-        }
-        else {
-            state_ = 0;
-        }
+            if (c_ == MATEK_HEADER1_) {
+                state_++;
+            }
+            else {
+                state_ = 0;
+            }
         }
 
         else if (state_ == HEADER2_POS_) {
-        if (c_ == TFMini_HEADER2_) {
-            state_++; 
-            checksum = 0x59 + 0x59;
-        }
-        else {
-            state_ = 0;
-        }
+            if (c_ == MATEK_HEADER2_) {
+                state_++; 
+            }
+            else {
+                state_ = 0;
+            }
         }
 
         // Lidar payload frame
-        else if (state_ > HEADER2_POS_ && state_ < TFMINI_CHECKSUM_POS_){
-            buf_[state_ - HEADER2_POS_ - 1] = c_;
+        else if (state_ > HEADER2_POS_){
+            buf_[ERCF_BYTE_COUNTER_] = c_;
 
-            if (state < TFMini_FRAME_SIZE - 2){checksum += c_;}
+            ERCF_BYTE_COUNTER_++;
             state_++;
-        }
-        // Lidar checksum
-        else if (state_ == TFMINI_CHECKSUM_POS_){
-            checksumByte = c_;
-
-            if (checksum != checksumByte) {
-                state = 100;
-                distance = -1;
-                strength = -1;
-                Serial.println("ERROR: bad checksum");
-                return -1;
-            }
-
-            dist_[0] = frame[0];
-            dist_[1] = frame[1];
-            strength_[0] = frame[2];
-            strength_[1] = frame[3];
-
-            state_ = 0;
             
-            return true;
+            if (ERCF_BYTE_COUNTER_ == ERCF_FRAME_SIZE_)
+            {
+                state_ = 0;
+                ERCF_BYTE_COUNTER_ = 0;
+
+                for (i=0; i<ERCF_FRAME_SIZE_; i++){
+                    angle_.byteArray[i] = buf_[i];
+                }
+                return true;
+            }
         }
     }
     return false; 

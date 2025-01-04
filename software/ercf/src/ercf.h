@@ -21,8 +21,8 @@
 * IN THE SOFTWARE.
 */
 
-#ifndef TFMINI_SRC_TFMINI_H_  // NOLINT
-#define TFMINI_SRC_TFMINI_H_
+#ifndef ERCF_SRC_ERCF_H_  // NOLINT
+#define ERCF_SRC_ERCF_H_
 
 #if defined(ARDUINO)
 #include "Arduino.h"
@@ -32,15 +32,14 @@
 
 namespace bfs {
 
-class TFMini {
+class ERCF {
  public:
-  TFMini() {}
-  explicit TFMini(HardwareSerial *bus) : bus_(bus) {}
+  ERCF() {}
+  explicit ERCF(HardwareSerial *bus) : bus_(bus) {}
   void Config(HardwareSerial *bus) {bus_ = bus;}
   bool Begin();
   bool Read();
-  inline uint16_t dist() const {return dist_.i2;}
-  inline uint16_t strength() const {return strength_.i2;}
+  inline float angle() const {return angle_.angle_uart;}
   
  private:
   /* Communication */
@@ -49,25 +48,24 @@ class TFMini {
   HardwareSerial *bus_;
   elapsedMillis t_ms_;
   /* Data */
-  typedef union {uint8_t bytes[2]; uint16_t i2;} union_16;
-  union_16 dist_, strength_;
+  typedef union {float angle_uart; byte byteArray[4];} union_float;
+  union_float angle_;
   /* Parser */
-  static constexpr uint8_t TFMini_HEADER1_ = 0x59;
-  static constexpr uint8_t TFMini_HEADER2_ = 0x59;
+  static constexpr uint8_t ERCF_HEADER1_ = 0x69;
+  static constexpr uint8_t ERCF_HEADER2_ = 0x69;
 
   static constexpr uint8_t HEADER1_POS_ = 0;
   static constexpr uint8_t HEADER2_POS_ = 1;
-  static constexpr uint8_t TFMINI_CHECKSUM_POS_ = 8;
 
   /* Driver state parameters*/
-  static uint8_t TFMini_FRAME_SIZE = 7;
+  static uint8_t ERCF_FRAME_SIZE_ = 4;
+  static uint8_t ERCF_BYTE_COUNTER_ = 0;
   uint8_t c_;
   uint8_t state_ = 0;
-  uint8_t buf_[TFMini_FRAME_SIZE];
-  uint8_t checksum_ = 0;
-  uint8_t checksumByte = 0;
+  uint8_t buf_[ERCF_FRAME_SIZE];
+
 };
 
 }  // namespace bfs
 
-#endif  // TFMINI_SRC_TFMINI_H_ NOLINT
+#endif  // ERCF_SRC_ERCF_H_ NOLINT
