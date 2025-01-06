@@ -1,0 +1,16 @@
+[StartTime]
+QuadBase-Static 1.MFC=2s
+[SolverState]
+QuadBase-Static 1.MFC=2
+[MainFrame]
+QuadBase-Static 1.MFC=MCAAAAAAAAAAAAAABAAAAAAAPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPMADAAAAADLBAAAAAEHEAAAAAGICAAAAA
+[ShowMin]
+QuadBase-Static 1.MFC=No
+[SolverType]
+QuadBase-Static 1.MFC=Linear Analysis
+[StudyType]
+QuadBase-Static 1.MFC=0
+[StudyName]
+QuadBase-Static 1.MFC=Static 1
+[Solver]
+QuadBase-Static 1.MFC=Sparse
