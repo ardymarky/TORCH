@@ -1,0 +1,48 @@
+This requires the use of tytools, download and extract the windows binary somewhere to your windows machine: https://github.com/Koromix/tytools
+Also make sure matlab is downloaded
+
+Firstly the code section below needs to be added to the end of the setup.m file in the spaaro code. This automatically does the autocoding for the vms
+Make sure the name of the system is correct
+##############################################################
+load_system('tutorial_vms');
+cs = getActiveConfigSet('tutorial_vms');
+set_param(cs, 'Toolchain', 'Microsoft Visual C++ 2022 v17.0 | nmake (64-bit Windows)'); % Adjust toolchain as needed
+set_param('tutorial_vms', 'GenerateReport', 'off');
+set_param('tutorial_vms', 'GenCodeOnly', 'on'); 
+slbuild('tutorial_vms');
+##############################################################
+
+
+
+
+This is the script that does all the cool stuff. Update the paths for your local system. 
+The line that starts with mv is meant for ease of use for students and is not necesaary if the slx file is already in the right spot.
+Make sure the vehicle and autcode variables are set correctly
+######################## script.sh  ##########################
+
+#!/bin/bash
+#replace ~~~ with appropriate paths
+mv /mnt/c/users/~~~/Desktop/'Flight Code'/torch.slx /mnt/c/users/~~~/simulation/vms/
+cd /mnt/c/users/~~~/simulation/
+/mnt/c/~~~/matlab.exe -batch setup
+cd /mnt/c/users/~~~/flight_code/build
+cmake .. -D FMU=mini-v1 -D VEHICLE=tutorial -D AUTOCODE=tutorial_vms
+make -j6 
+/mnt/c/~~~/tytools/tycmd.exe reset -b
+make flight_upload 
+make flight_upload
+
+##############################################################
+
+
+
+
+
+This script is the executable the student will click to run the upload. It calls wsl to run the script above
+######################## run.cmd  ############################
+
+wsl bash /mnt/c/~~~/script.sh
+
+##############################################################
+
+
